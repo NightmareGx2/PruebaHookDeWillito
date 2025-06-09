@@ -1,59 +1,67 @@
 import { Link } from "react-router-dom";
-import Titulo from "../components/Titulos";
+import Titulo from "../components/Titulo";
 import Button from "../components/Button";
-import useFetchUsers from "../hooks/users/useFetchUsers";
+import useFetchMovies from "../hooks/movies/useFetchMovies"; // Corregido
+import useMovieActions from "../hooks/movies/useMovieActions"; // Corregido
 import { optionSelect } from "../utils/apiUrl";
-import useUserAction from "../hooks/users/useUserAction";
- 
+
 const Home = () => {
-  const {users, getUsers} = useFetchUsers()
-  const {deleteUser, handleUpdateUser} = useUserAction(getUsers)
+  const { movies, getMovies } = useFetchMovies(); // Corregido: movies en lugar de users
+  const { deleteMovie } = useMovieActions(getMovies); // Corregido
+
+  const handleUpdateMovie = (movieId) => {
+    // Navegar directamente usando window.location o usar navigate del hook
+    window.location.href = `/users/${movieId}`;
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Link
         to="/users"
         className="text-2xl font-bold text-gray-900 mb-4 bg-green-100 p-2 rounded w-full text-center hover:bg-green-200 transition-colors block mb-6"
       >
-        Agregar usuario
+        Agregar Película
       </Link>
- 
-      <Titulo titulo="User Information" />
- 
+
+      <Titulo titulo="Películas Registradas" />
       <p className="mt-1 text-sm text-gray-600 mb-4">
-        Lista de usuarios registrados.
+        Lista de películas registradas.
       </p>
- 
+
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-lg">
           <thead className="bg-gray-100 text-gray-700 text-left text-sm">
             <tr>
-              <th className="px-4 py-2 border-b">anio</th>
-              <th className="px-4 py-2 border-b">genero</th>
-              <th className="px-4 py-2 border-b">titulo</th>
-              <th className="px-4 py-2 border-b">director</th>
-              <th className="px-4 py-2 border-b">calificacion</th>
+              <th className="px-4 py-2 border-b">ID</th>
+              <th className="px-4 py-2 border-b">Estreno</th>
+              <th className="px-4 py-2 border-b">Género</th>
+              <th className="px-4 py-2 border-b">Película</th>
+              <th className="px-4 py-2 border-b">Calificación</th>
+              <th className="px-4 py-2 border-b">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {users?.map((user) => (
+            {movies?.map((movie) => ( // Corregido: movies en lugar de users, movie en lugar de user
               <tr
-                key={user.id}
+                key={movie.id}
                 className="border-b hover:bg-gray-50 transition-colors"
               >
-                <td className="px-4 py-2">{user.anio}</td>
-                <td className="px-4 py-2">{user.titulo}</td>
-                <td className="px-4 py-2">{user.director}</td>
-                <td className="px-4 py-2">{user.calificacion}</td>
-
+                <td className="px-4 py-2">{movie.id}</td>
+                <td className="px-4 py-2">{movie.estreno}</td>
                 <td className="px-4 py-2">
-                  {optionSelect.find((opt) => opt.value === user.genero)
-                  ?.label || "sin asignar"}</td>
-                <td className="px-4 py-2">
-                  <Button text="Editar"
-                  onClick={() => handleUpdateUser(user.id)}/>
- 
-                  <Button text="Eliminar"
-                  onClick={() => deleteUser(user.id)}/>
+                  {optionSelect.find((opt) => opt.value === movie.genero)?.label || "sin asignar"}
+                </td>
+                <td className="px-4 py-2">{movie.pelicula}</td>
+                <td className="px-4 py-2">{movie.calificacion}</td>
+                <td className="px-4 py-2 flex gap-2">
+                  <Button
+                    text="Editar"
+                    onClick={() => handleUpdateMovie(movie.id)}
+                  />
+                  <Button
+                    text="Eliminar"
+                    onClick={() => deleteMovie(movie.id)}
+                  />
                 </td>
               </tr>
             ))}
@@ -63,5 +71,5 @@ const Home = () => {
     </div>
   );
 };
- 
-export default Home;  
+
+export default Home;
